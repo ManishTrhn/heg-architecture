@@ -3,6 +3,7 @@
     "name": "gamerboxd",
     "slug": "gamerboxd",
     "version": "1.0.0",
+    "scheme": "gamerboxd",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
