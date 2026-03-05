@@ -11,9 +11,8 @@ export default function ForgotPasswordScreen() {
   const handleReset = () => {
     if (email.length > 5) {
       setSubmitted(true);
-      // Simulation d'envoi d'email
     } else {
-      Alert.alert("Erreur", "Veuillez entrer une adresse email valide.");
+      Alert.alert("Erreur", "Email invalide");
     }
   };
 
@@ -31,7 +30,7 @@ export default function ForgotPasswordScreen() {
         {!submitted ? (
           <>
             <Text style={styles.instructions}>
-              Entrez votre email pour recevoir un lien de réinitialisation.
+              Email pour réinitialiser votre mot de passe
             </Text>
 
             <TextInput 
@@ -39,12 +38,11 @@ export default function ForgotPasswordScreen() {
               placeholder="Email" 
               placeholderTextColor="#888"
               keyboardType="email-address"
-              autoCapitalize="none"
               onChangeText={setEmail}
             />
 
             <TouchableOpacity style={styles.button} onPress={handleReset}>
-              <Text style={styles.buttonText}>Envoyer le lien</Text>
+              <Text style={styles.buttonText}>Envoyer</Text>
             </TouchableOpacity>
           </>
         ) : (

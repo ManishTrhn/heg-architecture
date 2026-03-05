@@ -8,7 +8,6 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <Stack 
           screenOptions={{ headerShown: false }}
-          // ⚠️ CETTE LIGNE FORCE LE LOGIN AU DÉMARRAGE
           initialRouteName="(auth)/login" 
         >
           <Stack.Screen name="(auth)/login" />

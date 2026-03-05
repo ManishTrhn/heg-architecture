@@ -6,7 +6,7 @@ export default function TabLayout() {
     <Tabs screenOptions={{ 
       tabBarActiveTintColor: '#ff0055',
       tabBarStyle: { backgroundColor: '#121212', borderTopColor: '#333' },
-      headerShown: false, // On cache l'en-tête pour gérer le design nous-mêmes
+      headerShown: false,
     }}>
       <Tabs.Screen
         name="index"
@@ -23,10 +23,23 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="reviews"
+        options={{
+          title: 'Reviews',
+          tabBarIcon: ({ color }) => <Ionicons name="star" size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="rate-game"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

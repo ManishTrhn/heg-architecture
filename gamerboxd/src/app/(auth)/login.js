@@ -40,7 +40,7 @@ export default function LoginScreen() {
 
         <TouchableOpacity 
           style={styles.button} 
-          onPress={() => router.replace('/(tabs)')} // Simule la connexion
+          onPress={() => router.replace('/(tabs)')}
         >
           <Text style={styles.buttonText}>Se connecter</Text>
         </TouchableOpacity>

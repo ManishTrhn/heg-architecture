@@ -1,7 +1,6 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function GameCard({ game, onPress }) {
-  // let the parent handle taps by passing an optional onPress handler
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       <Image source={game.image} style={styles.image} />
@@ -19,14 +18,21 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 15,
     overflow: 'hidden',
-    flexDirection: 'row', // Image à gauche, texte à droite comme Letterboxd
+    flexDirection: 'row',
   },
   image: {
-     width: 100,
-    height: 120 },
+    width: 100,
+    height: 120,
     resizeMode: 'cover',
-
-  info: { padding: 15, justifyContent: 'center' },
-  title: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  },
+  info: { 
+    padding: 15, 
+    justifyContent: 'center' 
+  },
+  title: { 
+    color: '#fff', 
+    fontSize: 18, 
+    fontWeight: 'bold' 
+  },
   subtitle: { color: '#888', marginTop: 5 },
 });

@@ -1,30 +1,29 @@
-import React, { useState } from 'react'; // On ajoute useState pour surveiller le texte
+import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, View, TouchableOpacity, Modal, ScrollView, Image, Alert } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { TRENDING_GAMES } from '../../constants/games';
 import GameCard from '../../components/GameCard';
 import { useUser } from '../../services/UserContext';
 
 export default function App() {
-
-  // 1. On crée une variable "search" pour stocker ce qu'on écrit
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('Tous');
   const [selectedGame, setSelectedGame] = useState(null);
   const { addGameToSaved, isGameSaved } = useUser();
+  const router = useRouter();
 
   return (
     <SafeAreaProvider>
      <SafeAreaView style={styles.container}>
 
         <Text style={styles.titre_1}>GamerBoxd</Text>
-        {/* 2. Ajout de la barre de recherche */}
         <TextInput
           style={styles.searchBar}
           placeholder="Rechercher un jeu..."
-          placeholderTextColor="#888" // Couleur du texte de l'espace réservé
-          value={search} // Le texte affiché est celui de notre variable
-          onChangeText={setSearch} // Quand on tape, on met à jour la variable 
+          placeholderTextColor="#888"
+          value={search}
+          onChangeText={setSearch}
         />
 
        <View style={styles.filterContainer}>
@@ -61,12 +60,11 @@ export default function App() {
         contentContainerStyle={{ paddingBottom: 20 }}
         showsVerticalScrollIndicator={false}
       />
-    {/* Modal pour les détails du jeu */}
 <Modal 
   visible={selectedGame !== null}
   animationType="slide"
   transparent={true}
-  onRequestClose={() => setSelectedGame(null)} // Nécessaire pour le bouton retour Android
+  onRequestClose={() => setSelectedGame(null)}
 >
   <View style={styles.modalOverlay}>
     <View style={styles.modalContent}>
@@ -83,7 +81,6 @@ export default function App() {
 
           <Text style={styles.modalSubtitle}>{selectedGame.releaseDate} • ⭐ {selectedGame.rating}</Text>
           
-          {/* SECTION NOTATION (Formulaire Métier Prototype) */}
           <View style={{marginVertical: 15, padding: 15, backgroundColor: '#2a2a2a', borderRadius: 12}}>
             <Text style={{color: '#fff', marginBottom: 10, fontWeight: 'bold'}}>Ma note :</Text>
             <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
@@ -101,6 +98,18 @@ export default function App() {
           </Text>
 
           <View style={{flexDirection: 'row', gap: 10, marginBottom: 30}}>
+            <TouchableOpacity 
+              style={[styles.closeButton, {flex: 1, backgroundColor: '#ff0055'}]} 
+              onPress={() => {
+                setSelectedGame(null);
+                router.push({
+                  pathname: '/(tabs)/rate-game',
+                  params: { gameId: selectedGame.id }
+                });
+              }}
+            >
+              <Text style={[styles.closeButtonText, {color: '#fff'}]}>⭐ Noter</Text>
+            </TouchableOpacity>
             <TouchableOpacity 
               style={[styles.closeButton, {flex: 1, backgroundColor: '#2a2a2a', borderWidth: 2, borderColor: '#ff0055'}]} 
               onPress={async () => {
@@ -128,7 +137,6 @@ export default function App() {
   </View>        
 </Modal>
 
-      {/* debugging helper */}
       {selectedGame && <Text style={{color: '#fff', textAlign: 'center', marginTop: 10}}>sélectionné : {selectedGame.name}</Text>}
       </SafeAreaView>
     </SafeAreaProvider>
@@ -137,31 +145,35 @@ export default function App() {
 
 // C'est ici qu'on définit le "look" (le CSS de l'app)
 const styles = StyleSheet.create({
-   container: {
+  container: {
     flex: 1,
     backgroundColor: '#121212',
-    paddingTop: 0,  // Évite que le titre touche le haut du téléphone
-    paddingHorizontal: 20, // Ajoute de l'espace sur les côtés 
+    paddingTop: 0,
+    paddingHorizontal: 20,
   },
   titre_1: {
-    color : '#ff0055',
-    fontSize : 28,
-    fontWeight: 'bold', // Texte en gras
-    letterSpacing: 1, // Espacement entre les lettres
-    textAlign: 'center', // Centre le titre
-    marginTop: 10, // Espace au-dessus du titre
-
+    color: '#ff0055',
+    fontSize: 28,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+    textAlign: 'center',
+    marginTop: 10,
   },
-  sectionTitle: { color: '#fff', fontSize: 20, fontWeight: '600', marginBottom: 15, marginTop: 10 },
-
+  sectionTitle: { 
+    color: '#fff', 
+    fontSize: 20, 
+    fontWeight: '600', 
+    marginBottom: 15, 
+    marginTop: 10 
+  },
   searchBar: {
-    backgroundColor: '#2a2a2a', // Gris foncé pour le champ
-    color: '#fff',              // Texte écrit en blanc
-    padding: 12,                // Espace intérieur pour que ce soit aéré
-    borderRadius: 12,           // Bords arrondis
+    backgroundColor: '#2a2a2a',
+    color: '#fff',
+    padding: 12,
+    borderRadius: 12,
     fontSize: 16,
-    marginTop: 15,              // Espace au-dessus de la barre
-    marginBottom: 15,           // Espace en dessous de la barre
+    marginTop: 15,
+    marginBottom: 15,
   },
   filterContainer: {
     marginVertical: 10,
@@ -188,23 +200,23 @@ const styles = StyleSheet.create({
   // --- Styles du Modal ---
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.85)', // Fond sombre transparent
-    justifyContent: 'flex-end', // La fenêtre monte du bas
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    justifyContent: 'flex-end',
   },
   modalContent: {
     backgroundColor: '#1e1e1e',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     padding: 20,
-    height: '80%', // Prend 80% de l'écran
+    height: '80%',
   },
 modalImage: {
-    width: '100%',         // Prend toute la largeur du modal
-    height: 300,            // Une belle hauteur pour bien voir l'image
-    borderRadius: 15,       // Des bords arrondis pour le style
-    marginBottom: 20,       // Espace sous l'image
-    resizeMode: 'cover',   // L'image remplit l'espace sans déformation (recadre si nécessaire)
-    backgroundColor: '#2a2a2a', // Fond sombre en attendant le chargement
+    width: '100%',
+    height: 300,
+    borderRadius: 15,
+    marginBottom: 20,
+    resizeMode: 'cover',
+    backgroundColor: '#2a2a2a',
   },
   modalTitle: {
     color: '#fff',

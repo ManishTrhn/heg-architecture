@@ -23,16 +23,14 @@ export default function RegisterScreen() {
       return;
     }
     
-    // Sauvegarder l'utilisateur
-    const userData = {
+    const data = {
       firstname: form.firstname,
       lastname: form.lastname,
       username: form.username,
       email: form.email,
     };
     
-    await saveUser(userData);
-    // Redirection vers la page d'accueil (tabs)
+    await saveUser(data);
     router.replace('/(tabs)');
   };
 
@@ -95,7 +93,6 @@ export default function RegisterScreen() {
           onChangeText={(t) => setForm({...form, confirmPassword: t})}
         />
 
-        {/* Case à cocher personnalisée */}
         <TouchableOpacity style={styles.checkboxContainer} onPress={() => setAgree(!agree)}>
           <View style={[styles.checkbox, agree && styles.checkboxActive]}>
             {agree && <Ionicons name="checkmark" size={16} color="white" />}

@@ -11,7 +11,6 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     await logout();
-    // Redirection vers le login en effaçant l'historique
     router.replace('/(auth)/login');
   };
 
