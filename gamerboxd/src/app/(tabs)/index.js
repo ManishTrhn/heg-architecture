@@ -98,17 +98,6 @@ export default function App() {
             <Text style={[styles.modalSubtitle, {marginTop: 4}]}>Genre : {selectedGame.genre}</Text>
           )}
           
-          <View style={{marginVertical: 15, padding: 15, backgroundColor: '#2a2a2a', borderRadius: 12}}>
-            <Text style={{color: '#fff', marginBottom: 10, fontWeight: 'bold'}}>Ma note :</Text>
-            <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <TouchableOpacity key={star}>
-                  <Text style={{fontSize: 24, color: '#ff0055'}}>★</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
           <Text style={styles.modalDescription}>
             Ceci est une description prototype pour {selectedGame.name}. 
             Un jeu incontournable pour les fans du genre !

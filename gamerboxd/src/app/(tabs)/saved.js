@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Image, Modal, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { useUser } from '../../services/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import GameCard from '../../components/GameCard';
 
 export default function SavedScreen() {
   const { savedGames, removeGameFromSaved } = useUser();
+  const router = useRouter();
   const [selectedGame, setSelectedGame] = useState(null);
 
   const handleDeleteGame = (gameId) => {
@@ -103,6 +105,20 @@ export default function SavedScreen() {
                   Ceci est une description prototype pour {selectedGame.name}.
                 </Text>
                 <TouchableOpacity
+                  style={styles.rateButton}
+                  onPress={async () => {
+                    const gameId = selectedGame.id;
+                    setSelectedGame(null);
+                    await removeGameFromSaved(gameId);
+                    router.push({
+                      pathname: '/(tabs)/rate-game',
+                      params: { gameId },
+                    });
+                  }}
+                >
+                  <Text style={styles.rateButtonText}>Jeu terminé ? Donnez votre note</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                   style={styles.deleteButton2}
                   onPress={() => {
                     handleDeleteGame(selectedGame.id);
@@ -136,6 +152,8 @@ const styles = StyleSheet.create({
   gameYear: { color: '#888', fontSize: 12 },
   
   deleteButton: { marginLeft: 10, padding: 10 },
+  rateButton: { backgroundColor: '#ff9900', padding: 15, borderRadius: 12, alignItems: 'center', marginTop: 4 },
+  rateButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   deleteButton2: { backgroundColor: '#ff0055', padding: 15, borderRadius: 12, alignItems: 'center', marginTop: 20, marginBottom: 30 },
   deleteButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   

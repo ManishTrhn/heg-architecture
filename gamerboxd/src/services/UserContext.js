@@ -33,9 +33,14 @@ export function UserProvider({ children }) {
   };
 
   const removeGameFromSaved = async (gameId) => {
-    const all = savedGames.filter(g => g.id !== gameId);
-    await AsyncStorage.setItem('savedGames', JSON.stringify(all));
-    setSavedGames(all);
+    const updatedSavedGames = savedGames.filter(g => g.id !== gameId);
+    const updatedReviews = gameReviews.filter(r => r.gameId !== gameId);
+
+    await AsyncStorage.setItem('savedGames', JSON.stringify(updatedSavedGames));
+    await AsyncStorage.setItem('gameReviews', JSON.stringify(updatedReviews));
+
+    setSavedGames(updatedSavedGames);
+    setGameReviews(updatedReviews);
   };
 
   const isGameSaved = (gameId) => {

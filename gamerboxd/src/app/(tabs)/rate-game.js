@@ -26,6 +26,9 @@ export default function RateGameScreen() {
     if (existing) {
       setRating(existing.rating);
       setReview(existing.review);
+    } else {
+      setRating(0);
+      setReview('');
     }
   }, [params.gameId]);
 
@@ -123,20 +126,6 @@ export default function RateGameScreen() {
 
           {/* Action Buttons */}
           <View style={styles.actionButtons}>
-            <TouchableOpacity
-              style={[styles.modernButton, { backgroundColor: '#ff9900' }]}
-              onPress={() => {
-                if (rating === 0) {
-                  Alert.alert('Erreur', 'Veuillez sélectionner une note avant de valider.');
-                  return;
-                }
-                router.back();
-              }}
-            >
-              <Ionicons name="star" size={24} color="#fff" />
-              <Text style={styles.modernButtonText}>Noter</Text>
-            </TouchableOpacity>
-
             <TouchableOpacity
               style={[styles.modernButton, styles.saveModern]}
               onPress={handleSave}
