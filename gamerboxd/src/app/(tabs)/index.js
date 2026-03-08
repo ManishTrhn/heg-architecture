@@ -28,7 +28,11 @@ export default function App() {
 
        <View style={styles.filterContainer}>
         <FlatList
-          data={['Tous', 'Action', 'RPG', 'Indie']}
+          data={[
+            'Tous',
+            // build unique genre list from the available games
+            ...new Set(TRENDING_GAMES.map((g) => g.genre).filter(Boolean)),
+          ]}
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
@@ -46,7 +50,17 @@ export default function App() {
         <Text style={styles.sectionTitle}>Jeux du moment</Text>
         
        <FlatList
-        data={TRENDING_GAMES}
+        data={
+          // apply search + genre filter to the list of games
+          TRENDING_GAMES.filter((game) => {
+            const matchesSearch = game.name
+              .toLowerCase()
+              .includes(search.toLowerCase());
+            const matchesGenre =
+              activeFilter === 'Tous' || game.genre === activeFilter;
+            return matchesSearch && matchesGenre;
+          })
+        }
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <GameCard
@@ -80,6 +94,9 @@ export default function App() {
           </View>
 
           <Text style={styles.modalSubtitle}>{selectedGame.releaseDate} • ⭐ {selectedGame.rating}</Text>
+          {selectedGame.genre && (
+            <Text style={[styles.modalSubtitle, {marginTop: 4}]}>Genre : {selectedGame.genre}</Text>
+          )}
           
           <View style={{marginVertical: 15, padding: 15, backgroundColor: '#2a2a2a', borderRadius: 12}}>
             <Text style={{color: '#fff', marginBottom: 10, fontWeight: 'bold'}}>Ma note :</Text>
@@ -123,12 +140,6 @@ export default function App() {
               }}
             >
               <Text style={[styles.closeButtonText, {color: '#ff0055'}]}>💾 Sauvegarder</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.closeButton, {flex: 1}]} 
-              onPress={() => setSelectedGame(null)}
-            >
-              <Text style={styles.closeButtonText}>Terminer</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -241,14 +252,17 @@ modalImage: {
   },
   closeButton: {
     backgroundColor: '#ff0055',
-    padding: 15,
-    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 8,
     alignItems: 'center',
+    minWidth: 80,
+    marginHorizontal: 2,
   },
   closeButtonText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
   },
 });
 

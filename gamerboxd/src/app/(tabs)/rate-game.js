@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Image, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { 
+  View, Text, StyleSheet, TouchableOpacity, TextInput, 
+  ScrollView, Image, Alert, KeyboardAvoidingView, Platform 
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -28,16 +31,26 @@ export default function RateGameScreen() {
 
   const handleSave = async () => {
     if (rating === 0) {
-      Alert.alert('Erreur', 'Sélectionnez une note');
+      Alert.alert('Erreur', 'Veuillez sélectionner une note avant de sauvegarder.');
       return;
     }
 
-    await addOrUpdateReview(game.id, game.name, game.image, rating, review);
-    Alert.alert('Succès', 'Avis sauvegardé !');
-    router.back();
+    try {
+      await addOrUpdateReview(game.id, game.name, game.image, rating, review);
+      Alert.alert('Succès', 'Votre avis a été enregistré !');
+      router.back();
+    } catch (error) {
+      Alert.alert('Erreur', 'Impossible de sauvegarder l’avis.');
+    }
   };
 
-  if (!game) return <SafeAreaView style={styles.container}><Text style={styles.loadingText}>Chargement...</Text></SafeAreaView>;
+  if (!game) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.loadingText}>Chargement...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -45,86 +58,91 @@ export default function RateGameScreen() {
       style={styles.flex}
     >
       <SafeAreaView style={styles.container}>
+        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={24} color="#ff0055" />
+            <Ionicons name="close-outline" size={28} color="#ff0055" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Noter ce jeu</Text>
-          <View style={{ width: 24 }} />
+          <View style={{ width: 28 }} />
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} style={styles.content}>
-          <Image source={game.image} style={styles.gameImage} />
-
-          <View style={styles.gameInfo}>
-            <Text style={styles.gameName}>{game.name}</Text>
-            <Text style={styles.gameYear}>
-              {game.releaseDate} • Évaluation: ⭐ {game.rating}
-            </Text>
+        <ScrollView 
+          showsVerticalScrollIndicator={false} 
+          contentContainerStyle={styles.scrollContent}
+        >
+          {/* Game Info Card */}
+          <View style={styles.gameHeaderCard}>
+            <Image source={game.image} style={styles.gameImage} />
+            <View style={styles.gameInfo}>
+              <Text style={styles.gameName}>{game.name}</Text>
+              <Text style={styles.gameYear}>
+                {game.releaseDate} • ⭐ {game.rating}
+              </Text>
+            </View>
           </View>
 
-          <View style={styles.ratingSection}>
-            <Text style={styles.sectionTitle}>Ma note :</Text>
-
+          {/* Star Rating Section */}
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>Ma note</Text>
             <View style={styles.starsContainer}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <TouchableOpacity
                   key={star}
                   onPress={() => setRating(star)}
-                  style={styles.starButton}
+                  activeOpacity={0.7}
                 >
-                  <Text
-                    style={[
-                      styles.star,
-                      { color: star <= rating ? '#ff0055' : '#444' }
-                    ]}
-                  >
-                    ★
-                  </Text>
+                  <Ionicons 
+                    name={star <= rating ? "star" : "star-outline"} 
+                    size={42} 
+                    color={star <= rating ? '#ff0055' : '#444'} 
+                  />
                 </TouchableOpacity>
               ))}
             </View>
-
             {rating > 0 && (
-              <Text style={styles.ratingLabel}>
-                {rating} / 5 étoile{rating > 1 ? 's' : ''}
-              </Text>
+              <Text style={styles.ratingLabel}>{rating} / 5 étoiles</Text>
             )}
           </View>
 
-          {/* Section Avis */}
-          <View style={styles.reviewSection}> 
-            <Text style={styles.sectionTitle}>Mon avis :</Text>
+          {/* Review Text Input */}
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>Mon avis (optionnel)</Text>
             <TextInput
               style={styles.reviewInput}
-              placeholder="Partagez votre avis sur ce jeu..."
+              placeholder="Qu'avez-vous pensé de l'histoire, du gameplay..."
               placeholderTextColor="#666"
               multiline
-              numberOfLines={8}
+              maxLength={500}
               value={review}
               onChangeText={setReview}
               textAlignVertical="top"
             />
-            <Text style={styles.charCount}>
-              {review.length} / 500 caractères
-            </Text>
+            <Text style={styles.charCount}>{review.length} / 500</Text>
           </View>
 
-          {/* Boutons d'action */}
+          {/* Action Buttons */}
           <View style={styles.actionButtons}>
             <TouchableOpacity
-              style={[styles.button, styles.cancelButton]}
-              onPress={() => router.back()}
+              style={[styles.modernButton, { backgroundColor: '#ff9900' }]}
+              onPress={() => {
+                if (rating === 0) {
+                  Alert.alert('Erreur', 'Veuillez sélectionner une note avant de valider.');
+                  return;
+                }
+                router.back();
+              }}
             >
-              <Text style={styles.cancelButtonText}>Annuler</Text>
+              <Ionicons name="star" size={24} color="#fff" />
+              <Text style={styles.modernButtonText}>Noter</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.button, styles.saveButton]}
+              style={[styles.modernButton, styles.saveModern]}
               onPress={handleSave}
             >
-              <Ionicons name="checkmark" size={20} color="#fff" />
-              <Text style={styles.saveButtonText}>Sauvegarder l'avis</Text>
+              <Ionicons name="checkmark-circle" size={24} color="#fff" />
+              <Text style={styles.modernButtonText}>Sauvegarder</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -134,138 +152,58 @@ export default function RateGameScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#121212',
-  },
+  flex: { flex: 1 },
+  container: { flex: 1, backgroundColor: '#121212' },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomColor: '#222',
   },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-  },
-  gameImage: {
-    width: '100%',
-    height: 280,
-    borderRadius: 12,
-    marginBottom: 20,
-  },
-  gameInfo: {
-    marginBottom: 30,
-  },
-  gameName: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  gameYear: {
-    color: '#888',
-    fontSize: 14,
-  },
-  ratingSection: {
-    backgroundColor: '#1e1e1e',
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    color: '#ff0055',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  starsContainer: {
+  headerTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  scrollContent: { padding: 20 },
+  gameHeaderCard: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    gap: 20,
-    marginBottom: 15,
-  },
-  starButton: {
-    padding: 5,
-  },
-  star: {
-    fontSize: 40,
-  },
-  ratingLabel: {
-    color: '#aaa',
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  reviewSection: {
+    marginBottom: 25,
     backgroundColor: '#1e1e1e',
-    borderRadius: 12,
+    borderRadius: 15,
+    padding: 15,
+  },
+  gameImage: { width: 80, height: 110, borderRadius: 8 },
+  gameInfo: { marginLeft: 15, flex: 1 },
+  gameName: { color: '#fff', fontSize: 20, fontWeight: 'bold', marginBottom: 5 },
+  gameYear: { color: '#aaa', fontSize: 14 },
+  card: {
+    backgroundColor: '#1e1e1e',
+    borderRadius: 15,
     padding: 20,
     marginBottom: 20,
   },
+  sectionTitle: { color: '#ff0055', fontSize: 16, fontWeight: 'bold', marginBottom: 15 },
+  starsContainer: { flexDirection: 'row', justifyContent: 'center', gap: 10 },
+  ratingLabel: { color: '#aaa', textAlign: 'center', marginTop: 10, fontSize: 14 },
   reviewInput: {
     backgroundColor: '#0a0a0a',
     color: '#fff',
-    borderRadius: 8,
+    borderRadius: 10,
     padding: 15,
-    borderWidth: 1,
-    borderColor: '#333',
-    fontSize: 14,
-    minHeight: 120,
-    marginBottom: 10,
+    minHeight: 150,
+    fontSize: 16,
   },
-  charCount: {
-    color: '#666',
-    fontSize: 12,
-    textAlign: 'right',
-  },
-  actionButtons: {
+  charCount: { color: '#666', fontSize: 12, textAlign: 'right', marginTop: 8 },
+  actionButtons: { marginTop: 12, gap: 12 },
+  modernButton: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 30,
-  },
-  button: {
-    flex: 1,
-    paddingVertical: 14,
-    paddingHorizontal: 12,
-    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
-    gap: 8,
+    paddingVertical: 20,
+    borderRadius: 14,
+    gap: 10,
   },
-  cancelButton: {
-    backgroundColor: '#333',
-    borderWidth: 1,
-    borderColor: '#555',
-  },
-  cancelButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  saveButton: {
-    backgroundColor: '#ff0055',
-  },
-  saveButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  loadingText: {
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 50,
-  },
+  saveModern: { backgroundColor: '#ff0055' },
+  modernButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 18 },
+  loadingText: { color: '#fff', textAlign: 'center', marginTop: 50 },
 });

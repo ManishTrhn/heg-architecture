@@ -55,7 +55,9 @@ export default function SavedScreen() {
                   />
                   <View style={styles.gameInfo}>
                     <Text style={styles.gameName}>{item.name}</Text>
-                    <Text style={styles.gameYear}>{item.releaseDate} • ⭐ {item.rating}</Text>
+                    <Text style={styles.gameYear}>
+                      {item.releaseDate} • {item.genre ? item.genre + ' • ' : ''}⭐ {item.rating}
+                    </Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -94,6 +96,9 @@ export default function SavedScreen() {
                 />
                 <Text style={styles.modalTitle}>{selectedGame.name}</Text>
                 <Text style={styles.modalSubtitle}>{selectedGame.releaseDate} • ⭐ {selectedGame.rating}</Text>
+                {selectedGame.genre && (
+                  <Text style={[styles.modalSubtitle, {marginTop: 4}]}>Genre : {selectedGame.genre}</Text>
+                )}
                 <Text style={styles.modalDescription}>
                   Ceci est une description prototype pour {selectedGame.name}.
                 </Text>

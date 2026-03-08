@@ -6,7 +6,9 @@ export default function GameCard({ game, onPress }) {
       <Image source={game.image} style={styles.image} />
       <View style={styles.info}>
         <Text style={styles.title}>{game.name}</Text>
-        <Text style={styles.subtitle}>{game.releaseDate} • ⭐ {game.rating}</Text>
+        <Text style={styles.subtitle}>
+          {game.releaseDate} • {game.genre ? game.genre + ' • ' : ''}⭐ {game.rating}
+        </Text>
       </View>
     </TouchableOpacity>
   );
